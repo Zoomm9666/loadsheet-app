@@ -1,5 +1,7 @@
 import os
+import sys
 import base64
+import logging
 import flet as ft
 from ui.theme import AppTheme
 from ui.flight_section import FlightCard
@@ -9,6 +11,14 @@ from ui.weather_section import WeatherCard
 from data.aircraft_db import AIRCRAFT_TYPES
 from core.fuel_logic import calc_fuel
 from core.loadsheet_generator import generate_loadsheet
+
+# ── Логирование ────────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    stream=sys.stdout,
+)
+logger = logging.getLogger("loadsheet")
 
 def main(page: ft.Page):
     # Настройки страницы
@@ -434,7 +444,12 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     # Определяем режим: если есть PORT env — веб, иначе десктоп
     is_web = os.environ.get("PORT") is not None
-    if is_web:
-        ft.app(target=main, view=ft.AppView.WEB_SERVER, port=port, host="0.0.0.0")
-    else:
-        ft.app(target=main)
+    logger.info("Starting Loadsheet App — mode: %s, port: %d", "WEB" if is_web else "DESKTOP", port)
+    try:
+        if is_web:
+            ft.app(target=main, view=ft.AppView.WEB_SERVER, port=port, host="0.0.0.0")
+        else:
+            ft.app(target=main)
+    except Exception as e:
+        logger.critical("Failed to start app: %s", e, exc_info=True)
+        sys.exit(1)
