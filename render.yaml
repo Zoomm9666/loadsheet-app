@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: loadsheet-app
+    runtime: docker
+    plan: free
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: CHECKWX_API_KEY
+        sync: false
