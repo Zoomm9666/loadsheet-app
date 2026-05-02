@@ -1,0 +1,17 @@
+# ── .dockerignore — исключения для Docker-контекста ───────────
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+.vscode/
+*.md
+!INSTALL_DOCKER.md
+test_*
+*.pdf
+*.txt
+!requirements.txt
+assets/__init__.py
+.env
+.env.*
+.env.example
