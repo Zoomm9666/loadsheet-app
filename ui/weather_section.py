@@ -1,6 +1,6 @@
 ﻿import flet as ft
 import re
-from api import get_metar, get_taf, get_metar_raw, get_taf_raw
+from api import get_metar, get_taf, get_metar_raw, get_taf_raw, is_api_key_configured
 
 
 # ---------- Безопасное получение вложенных полей ----------
@@ -238,6 +238,17 @@ class WeatherCard(ft.Container):
         except Exception:
             pass
 
+    def _show_no_api_key(self, output, container):
+        """Показывает сообщение об отсутствии API-ключа."""
+        t = self._theme
+        self._hide_panel(container)
+        output.value = "⚠️ API-ключ CheckWX не задан.\nУстановите переменную окружения CHECKWX_API_KEY."
+        output.color = "orange"
+        container.border = ft.border.all(2, "orange")
+        container.bgcolor = "#3b2f0f"
+        self._show_panel(container)
+        self._update_page()
+
     # ---------- Форматирование METAR ----------
     def _format_metar(self, data, raw_text):
         t = self._theme
@@ -337,6 +348,9 @@ class WeatherCard(ft.Container):
         icao = self._get_icao("dep_input")
         if not icao:
             return
+        if not is_api_key_configured():
+            self._show_no_api_key(self.dep_output, self.dep_container)
+            return
         data = get_metar(icao)
         raw = get_metar_raw(icao)
         self._hide_panel(self.dep_container)
@@ -353,6 +367,9 @@ class WeatherCard(ft.Container):
         icao = self._get_icao("dep_input")
         if not icao:
             return
+        if not is_api_key_configured():
+            self._show_no_api_key(self.dep_output, self.dep_container)
+            return
         data = get_taf(icao)
         raw = get_taf_raw(icao)
         self._hide_panel(self.dep_container)
@@ -367,6 +384,9 @@ class WeatherCard(ft.Container):
     def _load_arr_metar(self, e):
         icao = self._get_icao("arr_input")
         if not icao:
+            return
+        if not is_api_key_configured():
+            self._show_no_api_key(self.arr_output, self.arr_container)
             return
         data = get_metar(icao)
         raw = get_metar_raw(icao)
@@ -384,6 +404,9 @@ class WeatherCard(ft.Container):
         icao = self._get_icao("arr_input")
         if not icao:
             return
+        if not is_api_key_configured():
+            self._show_no_api_key(self.arr_output, self.arr_container)
+            return
         data = get_taf(icao)
         raw = get_taf_raw(icao)
         self._hide_panel(self.arr_container)
@@ -398,6 +421,9 @@ class WeatherCard(ft.Container):
     def _load_altn_metar(self, e):
         icao = self._get_icao("altn_input")
         if not icao:
+            return
+        if not is_api_key_configured():
+            self._show_no_api_key(self.altn_output, self.altn_container)
             return
         data = get_metar(icao)
         raw = get_metar_raw(icao)
@@ -414,6 +440,9 @@ class WeatherCard(ft.Container):
         t = self._theme
         icao = self._get_icao("altn_input")
         if not icao:
+            return
+        if not is_api_key_configured():
+            self._show_no_api_key(self.altn_output, self.altn_container)
             return
         data = get_taf(icao)
         raw = get_taf_raw(icao)

@@ -1,5 +1,11 @@
 # ── Cloud Build: автоматический деплой в Cloud Run ─────────────
 # Запускается при push в GitHub (настроить триггер в Cloud Build)
+#
+# ВАЖНО: для работы METAR задайте substitution _CHECKWX_API_KEY
+# в настройках триггера Cloud Build (или через --substitutions)
+
+substitutions:
+  _CHECKWX_API_KEY: ''
 
 steps:
   # Шаг 1: Сборка Docker-образа
@@ -38,6 +44,7 @@ steps:
       - '--cpu=1'
       - '--min-instances=0'
       - '--max-instances=3'
+      - '--set-env-vars=CHECKWX_API_KEY=$_CHECKWX_API_KEY'
 
 # Образы хранятся в Artifact Registry
 images:
