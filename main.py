@@ -435,6 +435,6 @@ if __name__ == "__main__":
     # Определяем режим: если есть PORT env — веб, иначе десктоп
     is_web = os.environ.get("PORT") is not None
     if is_web:
-        ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=port, host="0.0.0.0")
+        ft.app(target=main, view=ft.AppView.WEB_SERVER, port=port, host="0.0.0.0")
     else:
         ft.app(target=main)
